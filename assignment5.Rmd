@@ -1,0 +1,142 @@
+
+---
+output: # rmarkdown::github_document
+  html_document:
+    theme: cerulean
+    toc: true
+  pdf_document: default
+  word_document: default
+title: "Assignment 5: Handle Missing Values"
+---
+
+***How to do it?***: 
+
+- Open the Rmarkdown file of this assignment ([link](assignment5.Rmd)) in Rstudio. 
+
+- Right under each **question**, insert  a code chunk (you can use the hotkey `Ctrl + Alt + I` to add a code chunk) and code the solution for the question. 
+
+- `Knit` the rmarkdown file (hotkey: `Ctrl + Alt + K`) to export an html.  
+
+-  Publish the html file to your Githiub Page. 
+
+***Submission***: Submit the link on Github of the assignment to Canvas. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+-------
+
+**The data:** 
+
+This assignment works with the Adult Census Data that can be downloaded at [this link.](https://bryantstats.github.io/math421/data/adult_census_missing.csv)
+
+-------
+```{r}
+library(VIM)
+library(lubridate)
+library(dplyr)
+library(tidyverse)
+```
+
+**Questions**
+
+1. Use `read_csv` to import the data.  Show the number of NAs for each columns.   
+```{r}
+setwd("C:/Users/student/Downloads")
+census<-  read.csv('adult_census_missing.csv')
+colSums(is.na(census))
+```
+```{r}
+
+```
+
+2. Using function `aggr` the VIM package to plot the number of NAs for each column. 
+```{r}
+
+library(VIM)
+census <- na_if(census, 'Unknown')
+census <- na_if(census, 'Missing')
+census <- na_if(census, 'Not Available')
+aggr(census) 
+```
+
+
+3. Find other forms of missing values. Hint: You can use the `table` function to check if there are suspicious categories (Unknown, for example) in a variable. What all other forms of missing values shown in the data. 
+```{r}
+table(census$workclass)
+table(census$education)
+table(census$martial.status)
+table(census$occupation)
+table(census$relationship)
+table(census$native.country)
+```
+
+
+4. Replace all the forms of missing values found to NA
+```{r}
+census <- na_if(census, 'Not Known')
+census <- na_if(census, '?')
+```
+
+5. Replot the number of NAs for each column. 
+```{r}
+table(census$workclass)
+table(census$education)
+table(census$martial.status)
+table(census$occupation)
+table(census$relationship)
+table(census$native.country)
+```
+
+
+6. Approach 1 to handle NAs: remove all rows that have any NAs. Save the dataset after removing as a different data. The original data is unchanged (still have NAs).  How many rows left after removing?
+```{r}
+remove <- drop_na(census)
+
+```
+
+
+7. Approach 2 to handle NAs:  Fill all the NAs with the previous or next value. (Hint: Using `fill` function).  Save the dataset after filling as a different data. The original data is unchanged (still have NAs). 
+```{r}
+impute <- census %>% fill( .direction = 'updown')
+```
+
+
+8. Approach 3 to handle NAs: For numeric variable, replace the NAs by the median.  For categorical variables, replace the NAs to the majority. 
+
+
+```{r}
+median_age <- median(census$age, na.rm=TRUE)
+census$age <- replace_na(census$age, median_age)
+majority_class <- names(which.max(table(census$workclass)))
+census$workclass <- replace_na(census$workclass, majority_class)
+median_fnlwgt <- median(census$fnlwgt, na.rm=TRUE)
+census$fnlwgt <- replace_na(census$fnlwgt, median_fnlwgt)
+majority_edu <- names(which.max(table(census$education)))
+census$education <- replace_na(census$education, majority_edu)
+
+majority_stat <- names(which.max(table(census$marital.status)))
+census$marital.status <- replace_na(census$marital.status, majority_stat)
+majority_occu <- names(which.max(table(census$occupation)))
+census$occupation <- replace_na(census$occupation, majority_occu)
+majority_rela <- names(which.max(table(census$relationship)))
+census$relationship <- replace_na(census$relationship, majority_rela)
+majority_race <- names(which.max(table(census$race)))
+census$race <- replace_na(census$race, majority_race)
+majority_sex <- names(which.max(table(census$sex)))
+census$sex <- replace_na(census$sex, majority_sex)
+median_gain <- median(census$capital.gain, na.rm=TRUE)
+census$capital.gain<- replace_na(census$capital.gain, median_gain)
+median_loss <- median(census$capital.loss, na.rm=TRUE)
+census$capital.loss<- replace_na(census$capital.loss, median_loss)
+median_hrs <- median(census$hours.per.week, na.rm=TRUE)
+census$hours.per.week<- replace_na(census$hours.per.week, median_hrs)
+majority_country <- names(which.max(table(census$native.country)))
+census$native.country <- replace_na(census$native.country, majority_country)
+median_income <- median(census$income, na.rm=TRUE)
+census$income<- replace_na(census$income, median_income)
+```
+
+
+
