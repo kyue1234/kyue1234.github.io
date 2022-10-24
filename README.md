@@ -13,3 +13,5 @@
 
 [Assignment 7](assignment7.html)
 [Link to the plot](test.png)
+
+[Assignment 8](assignment8.html)
