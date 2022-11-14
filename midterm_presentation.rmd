@@ -1,0 +1,149 @@
+---
+title: "midterm"
+author: "Kai-Jia Yue"
+date: "2022-11-07"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE,
+                      message=FALSE,
+                      warning = FALSE)
+library(gganimate)
+library(ggplot2)
+library(tidyverse)
+library(knitr)
+library(gapminder)
+library(recipes)
+library(rpart)
+library(lubridate)
+library(rlang)
+library(haven)
+
+df <- read_csv('midterm.csv')
+```
+
+## Plot 1
+
+```{r echo=FALSE}
+library(tidyverse)
+library(ggplot2)
+df %>% ggplot()+
+  geom_line(mapping = aes(x = age,y=tot, color=sex))+
+  labs(x='Age',y='Total Patient Charges',color='Sex',title='Total Patient charge by age and sex',caption='Highest charge were young males')
+```
+
+## Plot 2
+
+```{r echo=FALSE}
+df %>% ggplot()+
+  geom_bar(mapping = aes(x = provider))+
+  labs(x='Provider',title='Provider by count',caption='Provider 7205 had the highest amount of users')
+```
+
+## Plot 3
+
+```{r echo=FALSE}
+df %>% 
+  ggplot()+
+  geom_boxplot(mapping = aes(x = tot, y = provider,group = provider))+
+  labs(x='Total charge', y='Provider',title='Provider by total charge',caption='Provider 7214 had the highest total charge')
+```
+
+## Plot 4
+
+```{r echo=FALSE}
+df %>% ggplot()+
+  geom_bar(mapping=aes(x=yoa, fill=provider ), position = 'fill')+
+  labs(x='Year of Admission', y='Proportion',color = 'Provider',title='Portion of a year of admissions by which providers',caption='7201 and 7202 were the only providers in 2016')
+```
+
+## Plot 5
+
+```{r echo=FALSE}
+df %>% group_by(moa) %>% 
+  summarise(average_tot=mean(tot, na.rm=TRUE)) %>% 
+  ggplot()+ 
+  geom_col(mapping=aes(x=moa, y=average_tot))+
+  labs(x='Month of admission', y='Average charge',title='length of stay by average charge',caption='The average charge per month stays mostly the same')
+
+```
+
+## Plot 6
+
+```{r echo=FALSE}
+df %>% ggplot()+geom_line(aes(x=los, y=tot))+
+  labs(x='Length of Stay', y='Total charge',title='length of stay by total charge',caption='The highest total charge was not the longest stay')
+```
+
+## Plot 7
+
+```{r echo=FALSE}
+df %>% ggplot()+geom_line(aes(x=age, y=los))+
+  labs(x='Age', y='Length of stay',title='Age by length of stay',caption='The highest length of stay was when they were in their 20s')
+
+```
+
+## Plot 8
+
+```{r echo=FALSE}
+df %>% ggplot()+
+  geom_histogram(mapping = aes(x = age))+
+  labs(x='Age', y='count',title='number of each age is admitted to the hospital',caption='under the age of 1 has the highest admission')
+```
+
+## Plot 9
+
+```{r echo=FALSE}
+df %>% ggplot()+ 
+  geom_point(mapping=aes(x=sex, y=tot))+
+  facet_wrap(~sex)+
+  labs(x='Age', y='Total charge',title='total charge vs sex',caption='Females had a higher total charge')
+```
+
+## Plot 10
+
+```{r echo=FALSE,warning=FALSE}
+df %>% 
+  group_by(provider, sex) %>% 
+  summarise(average_age=mean(age, na.rm=TRUE)) %>% 
+  ggplot()+ 
+  geom_col(mapping=aes(x=provider, 
+                       y=average_age, 
+                       fill=sex), 
+           position = 'dodge')+
+  labs(x='Provider', 
+       y = 'Average Age', 
+       fill='Gender', 
+       title = 'Average Age of Passenger by Provider and gender', 
+       caption = 'Provider 7211 tends to have a higher average age')
+```
+
+## Animation plot
+
+```{r echo=FALSE,out.width="70%",warning=FALSE}
+df %>% 
+  filter(tot<=250000)%>%
+  ggplot(aes(y=tot,
+            x=age,
+            color=provider))+ 
+  geom_line()+
+  geom_point(size=3)+
+  geom_text(aes(label = tot), 
+            hjust = -.1, size=5) +
+  transition_reveal(age)
+```
+
+## Total charge
+
+![](tot.png){width="70%"}
+
+## Length of Stay
+
+![](los.png){width="70%"}
+
+## Challenges
+
+-   Knitting the file took a while
+-   formatting the powerpoint
