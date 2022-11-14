@@ -15,3 +15,14 @@
 [Link to the plot](test.png)
 
 [Assignment 8](assignment8.html)
+
+[Assignment 9](assignment9.html)
+
+[Assignment 10](assignment10.html)
+
+[Assignment 11](assignment11.html)
+
+[Assignment 12](assignment12.html)
+
+[Midterm HTML](midterm_toc.html)
+[Midterm Presentation](midterm_presentation.html)
