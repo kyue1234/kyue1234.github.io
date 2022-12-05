@@ -25,5 +25,7 @@
 [Assignment 12](assignment12.html)
 
 [Midterm HTML](midterm_toc.html)
+
 [Midterm Presentation](midterm_presentation.html)
+
 [Assignment 13](assignment13.html)
